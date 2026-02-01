@@ -1,0 +1,220 @@
+body {
+  background-color: #1e1e2e; /* Dark theme background */
+  color: #cdd6f4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.app-header h1 {
+  color: #fab387; /* Peach color for title */
+  margin-bottom: 5px;
+}
+
+/* The Question Card */
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.question-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05); /* Glass effect */
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.question-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* When completed, dim the card */
+.question-card.completed {
+  opacity: 0.6;
+  border-color: #a6e3a1; /* Green border */
+}
+
+.checkbox-container input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #a6e3a1; /* Green checkbox */
+  margin-right: 15px;
+}
+
+.info-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-title {
+  color: #89b4fa; /* Blue link */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.question-title:hover {
+  text-decoration: underline;
+}
+
+.topic-tag {
+  font-size: 0.8rem;
+  color: #bac2de;
+  margin-top: 4px;
+}
+
+/* Difficulty Badges */
+.difficulty-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #1e1e2e; /* Dark text for contrast */
+}
+
+.difficulty-badge.easy { background-color: #a6e3a1; } /* Green */
+.difficulty-badge.medium { background-color: #f9e2af; } /* Yellow */
+.difficulty-badge.hard { background-color: #f38ba8; } /* Red */
+
+/* Progress Bar Container */
+.progress-container {
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 12px;
+  width: 100%;
+  border-radius: 6px;
+  margin: 15px 0 30px 0;
+  overflow: hidden;
+}
+
+/* The Moving Green Bar */
+.progress-fill {
+  height: 100%;
+  background-color: #a6e3a1; /* Green */
+  width: 0%; /* JS will change this dynamically */
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0 0 10px #a6e3a1;
+}
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cdd6f4;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filter-btn.active {
+  background: #fab387; /* Peach active color */
+  color: #1e1e2e;
+  font-weight: bold;
+  border-color: #fab387;
+}
+/* Container for Card + Note */
+.question-block {
+    display: flex;
+    flex-direction: column;
+}
+
+/* The Note Button (Pencil) */
+.note-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-right: 15px;
+    opacity: 0.7;
+    transition: transform 0.2s;
+}
+.note-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* The Editor Box */
+.note-editor {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 0 0 12px 12px;
+    margin-top: -5px; /* Pull it up to connect with card */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+}
+
+.note-editor textarea {
+    width: 96%;
+    height: 60px;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    padding: 10px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.note-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.save-btn {
+    background-color: #a6e3a1; /* Green */
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #1e1e2e;
+}
+
+.cancel-btn {
+    background-color: #f38ba8; /* Red */
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #1e1e2e;
+}
+
+/* Preview of saved note */
+.note-preview {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    color: #bac2de;
+    border-left: 3px solid #fab387; /* Orange accent */
+    margin-top: 5px;
+    border-radius: 4px;
+}
