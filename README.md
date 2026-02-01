@@ -34,26 +34,27 @@ A full-stack web application to track progress on the Data Structures and Algori
 ```bash
 git clone [https://github.com/YOUR_USERNAME/dsa-tracker.git](https://github.com/YOUR_USERNAME/dsa-tracker.git)
 cd dsa-tracker
+```
 
 ### 2. Setup Database (MySQL)
 ```bash
   -Open MySQL Workbench.
   -Create a database named dsa_tracker
   -Import the setup.sql file provided in the server folder.
-
+```
 ### 3. Setup Backend
 ```bash
   -cd server
   -npm install
    # Configure your db.js with your MySQL password
   -npm run dev  
-
+```
 ### 4. Setup Frontend
 ```bash
   -cd client 
   -npm install
   -npm start
-
+```
 # 🤝 Contributing
 Feel free to fork this repository and submit pull requests to add more sheets (like Love Babbar 450) or new features!
 
