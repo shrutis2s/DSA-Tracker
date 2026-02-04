@@ -13,7 +13,7 @@
 //   // 1. Fetch data when the page loads
 //   useEffect(() => {
 //     // Make sure your backend is running on port 3001!
-//     axios.get(`http://localhost:3001/api/questions/${USER_ID}`)
+//     axios.get(`https://dsa-tracker-cuhr.onrender.com/api/questions/${USER_ID}`)
 //       .then(response => {
 //         setQuestions(response.data);
 //       })
@@ -22,7 +22,7 @@
 //       });
 //   }, []);
 //   const toggleQuestion = (id) => {
-//     axios.post('http://localhost:3001/api/mark-complete', {
+//     axios.post('https://dsa-tracker-cuhr.onrender.com/api/mark-complete', {
 //       userId: USER_ID,
 //       questionId: id
 //     })
@@ -125,10 +125,14 @@ function App() {
   // Track the text being typed in the active note box
   const [currentNote, setCurrentNote] = useState("");
 
+  // --- CONFIGURATION ---
+  // This is your LIVE Backend URL from Render
+  const API_BASE = "https://dsa-tracker-cuhr.onrender.com";
   const USER_ID = 1; 
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/api/questions/${USER_ID}`)
+    // Fetch questions from the Cloud Backend
+    axios.get(`${API_BASE}/api/questions/${USER_ID}`)
       .then(response => {
         setQuestions(response.data);
       })
@@ -138,11 +142,13 @@ function App() {
   }, []);
 
   const toggleQuestion = (id) => {
-    axios.post('http://localhost:3001/api/mark-complete', {
+    // Mark complete in the Cloud Database
+    axios.post(`${API_BASE}/api/mark-complete`, {
       userId: USER_ID,
       questionId: id
     })
     .then(() => {
+      // Update local screen immediately
       setQuestions(questions.map(q => 
         q.id === id ? { ...q, isCompleted: !q.isCompleted } : q
       ));
@@ -155,9 +161,9 @@ function App() {
     setCurrentNote(question.notes || ""); // Load existing note or empty string
   };
 
-  // Save the note to Backend
+  // Save the note to Cloud Database
   const saveNote = (id) => {
-    axios.post('http://localhost:3001/api/save-note', {
+    axios.post(`${API_BASE}/api/save-note`, {
       userId: USER_ID,
       questionId: id,
       note: currentNote
@@ -177,6 +183,7 @@ function App() {
     return Math.round((completedCount / questions.length) * 100);
   };
 
+  // Get unique topics for the filter buttons
   const topics = ["All", ...new Set(questions.map(q => q.topic))];
 
   return (
@@ -190,7 +197,13 @@ function App() {
         
         <div className="filters">
           {topics.map(topic => (
-            <button key={topic} className={`filter-btn ${selectedTopic === topic ? 'active' : ''}`} onClick={() => setSelectedTopic(topic)}>{topic}</button>
+            <button 
+              key={topic} 
+              className={`filter-btn ${selectedTopic === topic ? 'active' : ''}`} 
+              onClick={() => setSelectedTopic(topic)}
+            >
+              {topic}
+            </button>
           ))}
         </div>
       </header>
