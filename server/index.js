@@ -159,7 +159,43 @@ app.post('/api/save-note', (req, res) => {
         }
     });
 });
+// --- AUTHENTICATION ROUTES ---
 
+// 1. REGISTER (Create a new user)
+app.post('/api/register', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Check if user exists
+    const checkSql = "SELECT * FROM users WHERE username = ?";
+    db.query(checkSql, [username], (err, result) => {
+        if (err) return res.status(500).send("Error");
+        if (result.length > 0) return res.status(400).send("User already exists");
+
+        // Create User
+        const insertSql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        db.query(insertSql, [username, password], (err, result) => {
+            if (err) return res.status(500).send("Error creating user");
+            res.json({ message: "User registered!", userId: result.insertId });
+        });
+    });
+});
+
+// 2. LOGIN (Check username & password)
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    db.query(sql, [username, password], (err, result) => {
+        if (err) return res.status(500).send("Error");
+        
+        if (result.length > 0) {
+            // Success! Send back the user ID
+            res.json({ success: true, userId: result[0].id, username: result[0].username });
+        } else {
+            res.status(401).json({ success: false, message: "Wrong username or password" });
+        }
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
