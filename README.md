@@ -19,10 +19,14 @@ A full-stack web application to track progress on the Data Structures and Algori
 - **Tools:** VS Code, Git, Postman/ThunderClient
 
 ## 📸 Screenshots
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/5ba9d552-9cb0-43ea-829b-b7abe0541af5" />
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/03976237-ecd5-4599-aac3-bca982b5c25e" />
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/832a3400-cd43-4e49-938d-2126fb413f74" />
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/3267b17e-d28b-4153-a992-792561399f9c" />
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/265e120d-3615-423e-a342-c8e4b5b81a56" />
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/2f63bbf3-b76a-4b84-88e5-ff3e5336ed75" />
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/8e32c172-2e4a-4dc6-8907-cc45ef947f05" />
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/639e0339-4524-472f-b800-d2707767a876" />
+
+
+
+
 
 
 
