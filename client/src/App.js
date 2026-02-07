@@ -117,6 +117,8 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
+  // Inside App() function, with your other existing state variables
+  const [loading, setLoading] = useState(true); // Start as true
   const [questions, setQuestions] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState("All");
   
@@ -131,13 +133,14 @@ function App() {
   const USER_ID = 1; 
 
   useEffect(() => {
-    // Fetch questions from the Cloud Backend
     axios.get(`${API_BASE}/api/questions/${USER_ID}`)
       .then(response => {
         setQuestions(response.data);
+        setLoading(false); // <--- Data is here, stop loading!
       })
       .catch(error => {
         console.error("Error fetching data:", error);
+        setLoading(false); // Stop loading even if there is an error
       });
   }, []);
 
@@ -186,6 +189,19 @@ function App() {
   // Get unique topics for the filter buttons
   const topics = ["All", ...new Set(questions.map(q => q.topic))];
 
+  // If loading is true, show this instead of the main app
+  if (loading) {
+    return (
+        <div className="App">
+            <header className="app-header">
+                <h1>DSA Tracker</h1>
+                <p style={{ marginTop: "20px" }}>Loading your progress...</p>
+            </header>
+        </div>
+    );
+  }
+
+  // ... rest of your code (return statement)
   return (
     <div className="App">
       <header className="app-header">

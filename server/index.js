@@ -87,9 +87,9 @@ app.get('/', (req, res) => {
 app.get('/api/questions/:userId', (req, res) => {
     const userId = req.params.userId;
     const sql = `
-        SELECT q.id, q.title, q.link, q.difficulty, q.topic, 
-               COALESCE(up.completed_at IS NOT NULL, 0) as isCompleted,
-               up.notes
+        SELECT q.id, q.title, q.link, q.difficulty, q.topic, q.sheet_name,
+       COALESCE(up.completed_at IS NOT NULL, 0) as isCompleted,
+       up.notes
         FROM questions q
         LEFT JOIN user_progress up ON q.id = up.question_id AND up.user_id = ?
     `;
