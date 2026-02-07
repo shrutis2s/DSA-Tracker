@@ -218,3 +218,34 @@ body {
     margin-top: 5px;
     border-radius: 4px;
 }
+
+/* Add to App.css */
+.sheet-selector {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sheet-btn {
+  background-color: #2c2c2c;
+  color: #bbb;
+  border: 1px solid #444;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.sheet-btn:hover {
+  background-color: #333;
+  color: white;
+}
+
+.sheet-btn.active-sheet {
+  background-color: #007bff; /* Blue active color */
+  color: white;
+  border-color: #007bff;
+  font-weight: bold;
+}

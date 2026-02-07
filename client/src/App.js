@@ -117,54 +117,48 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-  // Inside App() function, with your other existing state variables
-  const [loading, setLoading] = useState(true); // Start as true
   const [questions, setQuestions] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState("All");
   
-  // Track which question ID is currently being edited
+  // NEW: State for the selected Sheet
+  const [selectedSheet, setSelectedSheet] = useState("Striver 75");
+
   const [editingId, setEditingId] = useState(null);
-  // Track the text being typed in the active note box
   const [currentNote, setCurrentNote] = useState("");
 
-  // --- CONFIGURATION ---
-  // This is your LIVE Backend URL from Render
-  const API_BASE = "https://dsa-tracker-cuhr.onrender.com";
+  const API_BASE = "https://dsa-tracker-cuhr.onrender.com"; // Your Render URL
   const USER_ID = 1; 
+
+  // List of Sheets you want to show
+  const availableSheets = ["Striver 75", "Love Babbar 450", "NeetCode 150"];
 
   useEffect(() => {
     axios.get(`${API_BASE}/api/questions/${USER_ID}`)
       .then(response => {
         setQuestions(response.data);
-        setLoading(false); // <--- Data is here, stop loading!
       })
       .catch(error => {
         console.error("Error fetching data:", error);
-        setLoading(false); // Stop loading even if there is an error
       });
   }, []);
 
   const toggleQuestion = (id) => {
-    // Mark complete in the Cloud Database
     axios.post(`${API_BASE}/api/mark-complete`, {
       userId: USER_ID,
       questionId: id
     })
     .then(() => {
-      // Update local screen immediately
       setQuestions(questions.map(q => 
         q.id === id ? { ...q, isCompleted: !q.isCompleted } : q
       ));
     });
   };
 
-  // Open the note editor for a specific question
   const startEditing = (question) => {
     setEditingId(question.id);
-    setCurrentNote(question.notes || ""); // Load existing note or empty string
+    setCurrentNote(question.notes || ""); 
   };
 
-  // Save the note to Cloud Database
   const saveNote = (id) => {
     axios.post(`${API_BASE}/api/save-note`, {
       userId: USER_ID,
@@ -172,44 +166,54 @@ function App() {
       note: currentNote
     })
     .then(() => {
-      // Update local state so we don't need to refresh
       setQuestions(questions.map(q => 
         q.id === id ? { ...q, notes: currentNote } : q
       ));
-      setEditingId(null); // Close the editor
+      setEditingId(null); 
     });
   };
 
+  // --- FILTERING LOGIC ---
+  // 1. Filter by Sheet first
+  const sheetQuestions = questions.filter(q => q.sheet_name === selectedSheet);
+  
+  // 2. Then Filter by Topic (using the sheet-filtered list)
+  const visibleQuestions = sheetQuestions.filter(q => selectedTopic === "All" || q.topic === selectedTopic);
+
   const calculateProgress = () => {
-    if (questions.length === 0) return 0;
-    const completedCount = questions.filter(q => q.isCompleted).length;
-    return Math.round((completedCount / questions.length) * 100);
+    if (sheetQuestions.length === 0) return 0;
+    const completedCount = sheetQuestions.filter(q => q.isCompleted).length;
+    return Math.round((completedCount / sheetQuestions.length) * 100);
   };
 
-  // Get unique topics for the filter buttons
-  const topics = ["All", ...new Set(questions.map(q => q.topic))];
+  // Get topics ONLY from the current sheet
+  const topics = ["All", ...new Set(sheetQuestions.map(q => q.topic))];
 
-  // If loading is true, show this instead of the main app
-  if (loading) {
-    return (
-        <div className="App">
-            <header className="app-header">
-                <h1>DSA Tracker</h1>
-                <p style={{ marginTop: "20px" }}>Loading your progress...</p>
-            </header>
-        </div>
-    );
-  }
-
-  // ... rest of your code (return statement)
   return (
     <div className="App">
       <header className="app-header">
         <h1>DSA Tracker</h1>
+        
+        {/* --- NEW: SHEET SELECTOR BUTTONS --- */}
+        <div className="sheet-selector">
+            {availableSheets.map(sheet => (
+                <button 
+                    key={sheet}
+                    className={`sheet-btn ${selectedSheet === sheet ? 'active-sheet' : ''}`}
+                    onClick={() => {
+                        setSelectedSheet(sheet);
+                        setSelectedTopic("All"); // Reset topic when switching sheets
+                    }}
+                >
+                    {sheet}
+                </button>
+            ))}
+        </div>
+
         <div className="progress-container">
             <div className="progress-fill" style={{ width: `${calculateProgress()}%` }}></div>
         </div>
-        <p>{questions.filter(q => q.isCompleted).length} / {questions.length} Questions Solved ({calculateProgress()}%)</p>
+        <p>{sheetQuestions.filter(q => q.isCompleted).length} / {sheetQuestions.length} Questions Solved ({calculateProgress()}%)</p>
         
         <div className="filters">
           {topics.map(topic => (
@@ -225,51 +229,49 @@ function App() {
       </header>
       
       <div className="question-list">
-        {questions
-          .filter(q => selectedTopic === "All" || q.topic === selectedTopic)
-          .map((q) => (
-          <div key={q.id} className={`question-block`}>
-            {/* Main Question Row */}
-            <div className={`question-card ${q.isCompleted ? 'completed' : ''}`}>
-                <div className="checkbox-container">
-                    <input type="checkbox" checked={!!q.isCompleted} onChange={() => toggleQuestion(q.id)} />
-                </div>
-                <div className="info-container">
-                    <a href={q.link} target="_blank" rel="noreferrer" className="question-title">{q.title}</a>
-                    <span className="topic-tag">{q.topic}</span>
-                </div>
-                
-                {/* Note Button (Pencil Icon) */}
-                <button className="note-btn" onClick={() => startEditing(q)}>
-                    {q.notes ? "📝" : "✏️"} 
-                </button>
-
-                <span className={`difficulty-badge ${q.difficulty.toLowerCase()}`}>{q.difficulty}</span>
-            </div>
-
-            {/* Note Editor Area (Only shows if editingId matches this question) */}
-            {editingId === q.id && (
-                <div className="note-editor">
-                    <textarea 
-                        value={currentNote} 
-                        onChange={(e) => setCurrentNote(e.target.value)}
-                        placeholder="Write your logic, time complexity, or tricks here..."
-                    />
-                    <div className="note-actions">
-                        <button className="save-btn" onClick={() => saveNote(q.id)}>Save Note</button>
-                        <button className="cancel-btn" onClick={() => setEditingId(null)}>Cancel</button>
+        {visibleQuestions.length === 0 ? (
+            <div className="empty-state">No questions available in this sheet yet!</div>
+        ) : (
+            visibleQuestions.map((q) => (
+            <div key={q.id} className={`question-block`}>
+                <div className={`question-card ${q.isCompleted ? 'completed' : ''}`}>
+                    <div className="checkbox-container">
+                        <input type="checkbox" checked={!!q.isCompleted} onChange={() => toggleQuestion(q.id)} />
                     </div>
+                    <div className="info-container">
+                        <a href={q.link} target="_blank" rel="noreferrer" className="question-title">{q.title}</a>
+                        <span className="topic-tag">{q.topic}</span>
+                    </div>
+                    
+                    <button className="note-btn" onClick={() => startEditing(q)}>
+                        {q.notes ? "📝" : "✏️"} 
+                    </button>
+
+                    <span className={`difficulty-badge ${q.difficulty.toLowerCase()}`}>{q.difficulty}</span>
                 </div>
-            )}
-            
-            {/* Show Saved Note Preview if it exists and we aren't editing */}
-            {q.notes && editingId !== q.id && (
-                <div className="note-preview">
-                    <strong>Note:</strong> {q.notes}
-                </div>
-            )}
-          </div>
-        ))}
+
+                {editingId === q.id && (
+                    <div className="note-editor">
+                        <textarea 
+                            value={currentNote} 
+                            onChange={(e) => setCurrentNote(e.target.value)}
+                            placeholder="Write your logic..."
+                        />
+                        <div className="note-actions">
+                            <button className="save-btn" onClick={() => saveNote(q.id)}>Save Note</button>
+                            <button className="cancel-btn" onClick={() => setEditingId(null)}>Cancel</button>
+                        </div>
+                    </div>
+                )}
+                
+                {q.notes && editingId !== q.id && (
+                    <div className="note-preview">
+                        <strong>Note:</strong> {q.notes}
+                    </div>
+                )}
+            </div>
+            ))
+        )}
       </div>
     </div>
   );
